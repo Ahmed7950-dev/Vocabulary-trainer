@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>New Language Challenges</title>
+
+<!-- PWA manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- iOS PWA meta tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NLC">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1208">
+<meta name="description" content="Personal Arabic language learning — words, phrases, grammar study.">
+
+<!-- Apple touch icons (iOS home screen) -->
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1208; --paper: #f5f0e8; --paper2: #ede7d9; --paper3: #e2dace;
+    --amber: #c8830a; --amber-light: #fdf0d5; --amber-border: #e8b84b;
+    --coral: #b84a2a; --coral-light: #fceee9; --coral-border: #e08060;
+    --blue: #1e4f82; --blue-light: #e8f0fa; --blue-border: #7aacd4;
+    --green: #2a6e3f; --green-light: #e8f5ed;
+    --red: #8b2020; --red-light: #fceaea;
+    --muted: #7a6e5e; --border: #c8bfae; --radius: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Mono', monospace; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── Header ── */
+  header { border-bottom: 1.5px solid var(--border); padding: 0.85rem 2rem; display: flex; align-items: center; gap: 1rem; background: var(--paper); }
+  .logo { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; color: var(--ink); letter-spacing: 0.02em; direction: ltr; }
+  .logo-ar { font-family: 'Amiri', serif; font-size: 20px; color: var(--muted); }
+  .header-spacer { flex: 1; }
+  .header-list-name { font-size: 13px; color: var(--ink); direction: ltr; font-weight: 500; cursor: pointer; border-bottom: 1px dashed var(--border); padding-bottom: 1px; }
+  .header-list-name:hover { border-color: var(--ink); }
+  .header-list-name.unsaved { color: var(--muted); font-style: italic; }
+
+  /* ── Tab nav ── */
+  .tab-nav { background: var(--paper); border-bottom: 1.5px solid var(--border); padding: 0 2rem; display: flex; gap: 0; align-items: flex-end; direction: ltr; }
+  .tab-btn { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; padding: 10px 18px 9px; cursor: pointer; transition: color 0.15s, border-color 0.15s; white-space: nowrap; margin-bottom: -1.5px; }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 500; }
+
+  /* ── Lists bar ── */
+  .lists-bar { background: var(--paper2); border-bottom: 1.5px solid var(--border); padding: 0.55rem 2rem; display: flex; gap: 8px; align-items: center; overflow-x: auto; direction: ltr; }
+  .lists-bar-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; margin-right: 4px; flex-shrink: 0; }
+  .list-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--paper); font-size: 12px; color: var(--ink); cursor: pointer; white-space: nowrap; transition: background 0.1s, border-color 0.1s; flex-shrink: 0; }
+  .list-chip:hover { background: var(--paper3); border-color: var(--ink); }
+  .list-chip.active-list { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .list-chip-x { font-size: 11px; opacity: 0.45; line-height: 1; }
+  .list-chip-x:hover { opacity: 1; }
+  .lists-bar-empty { font-size: 12px; color: var(--muted); font-style: italic; }
+  .btn-new-list { font-size: 11px; color: var(--muted); background: none; border: 1px dashed var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; white-space: nowrap; transition: border-color 0.1s, color 0.1s; flex-shrink: 0; }
+  .btn-new-list:hover { border-color: var(--ink); color: var(--ink); }
+  .lists-bar-sep { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; margin: 0 4px; }
+  .btn-data { font-size: 11px; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; white-space: nowrap; transition: border-color 0.1s, color 0.1s; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .btn-data:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* ── Pages ── */
+  .page { display: none; flex: 1; padding: 2rem; max-width: 860px; margin: 0 auto; width: 100%; }
+  .page.active { display: block; }
+  .section-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); direction: ltr; margin-bottom: 0.75rem; }
+
+  /* ── Add area ── */
+  .add-area { background: var(--paper2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.5rem; }
+  .add-row { display: flex; gap: 10px; align-items: flex-end; }
+  .add-textarea { flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-family: 'Amiri', serif; font-size: 20px; color: var(--ink); resize: none; direction: rtl; outline: none; transition: border-color 0.15s; line-height: 1.6; }
+  .add-textarea:focus { border-color: var(--amber); }
+  .add-textarea::placeholder { color: var(--muted); font-size: 16px; }
+  .add-textarea.words-box { height: 80px; }
+  .add-textarea.phrases-box { height: 110px; }
+  .add-hint { font-size: 11px; color: var(--muted); margin-top: 8px; direction: ltr; }
+
+  /* ── Buttons ── */
+  .btn { cursor: pointer; font-family: 'DM Mono', monospace; font-size: 13px; border-radius: var(--radius); padding: 0 18px; height: 46px; border: 1.5px solid var(--border); background: var(--paper); color: var(--ink); transition: background 0.12s, border-color 0.12s; white-space: nowrap; direction: ltr; }
+  .btn:hover { background: var(--paper3); border-color: var(--ink); }
+  .btn-primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn-primary:hover { background: #3a3020; }
+  .btn-primary:disabled { opacity: 0.35; cursor: default; background: var(--ink); pointer-events: none; }
+  .btn-sm { height: 38px; font-size: 12px; padding: 0 14px; display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius); border: 1.5px solid var(--border); background: transparent; color: var(--muted); font-family: 'DM Mono', monospace; cursor: pointer; transition: background 0.12s, color 0.12s, border-color 0.12s; direction: ltr; }
+  .btn-sm:hover { background: var(--paper2); color: var(--ink); border-color: var(--ink); }
+  .btn-sm:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+  .btn-sm.btn-save { border-color: var(--amber-border); color: var(--amber); }
+  .btn-sm.btn-save:hover { background: var(--amber-light); }
+
+  /* ── Legend ── */
+  .legend { display: flex; gap: 16px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); direction: ltr; }
+  .legend-pip { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--paper2); flex-shrink: 0; }
+  .legend-pip.p1 { background: var(--amber-light); border-color: var(--amber-border); }
+  .legend-pip.p2 { background: var(--coral-light); border-color: var(--coral-border); }
+
+  /* ── Word/Phrase table ── */
+  .item-table { width: 100%; border-collapse: collapse; margin-bottom: 1.75rem; }
+  .item-table thead th { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 0 12px 10px; border-bottom: 1px solid var(--border); }
+  .item-table thead th.col-ar { text-align: right; direction: rtl; }
+  .item-table thead th.col-en { text-align: left; direction: ltr; }
+  .item-table thead th.col-pri { text-align: center; width: 76px; }
+  .item-row { cursor: pointer; }
+  .item-row td { padding: 10px 12px; border-bottom: 0.5px solid var(--paper3); vertical-align: middle; transition: background 0.08s; }
+  .item-row:hover td { background: var(--paper2) !important; }
+  .item-row.p1 td { background: var(--amber-light); }
+  .item-row.p2 td { background: var(--coral-light); }
+  .cell-arabic { font-family: 'Amiri', serif; font-size: 22px; direction: rtl; text-align: right; color: var(--ink); line-height: 1.4; }
+  .cell-arabic.phrase { font-size: 18px; }
+  .item-row.p2 .cell-arabic { color: var(--coral); }
+  .cell-trans { direction: ltr; text-align: left; }
+  .cell-trans input { background: transparent; border: none; outline: none; font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink); width: 100%; direction: ltr; cursor: text; }
+  .cell-trans input::placeholder { color: var(--muted); }
+  .cell-priority { text-align: center; width: 76px; }
+  .priority-badge { display: inline-block; font-size: 10px; font-weight: 500; border-radius: 999px; padding: 2px 8px; background: rgba(0,0,0,0.07); color: var(--muted); }
+  .item-row.p1 .priority-badge { background: rgba(200,131,10,0.15); color: var(--amber); }
+  .item-row.p2 .priority-badge { background: rgba(184,74,42,0.15); color: var(--coral); }
+  .cell-remove { width: 36px; text-align: center; }
+  .remove-btn { background: none; border: none; cursor: pointer; font-size: 13px; color: var(--border); padding: 4px; line-height: 1; }
+  .remove-btn:hover { color: var(--red); }
+  .empty-state { font-size: 13px; color: var(--muted); padding: 12px 0; direction: ltr; }
+
+  /* ── Bottom bar ── */
+  .bottom-bar { display: flex; align-items: center; gap: 10px; border-top: 1.5px solid var(--border); padding-top: 1.25rem; flex-wrap: wrap; }
+  .item-count { font-size: 12px; color: var(--muted); flex: 1; direction: ltr; min-width: 100px; }
+
+  /* ── Modal ── */
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(26,18,8,0.4); z-index: 100; align-items: center; justify-content: center; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--paper); border: 1.5px solid var(--border); border-radius: 10px; padding: 1.75rem; width: 380px; max-width: 92vw; direction: ltr; }
+  .modal-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 1rem; }
+  .modal input[type="text"] { width: 100%; background: var(--paper2); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-family: 'DM Mono', monospace; font-size: 14px; color: var(--ink); outline: none; transition: border-color 0.15s; }
+  .modal input[type="text"]:focus { border-color: var(--amber); }
+  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 1rem; }
+  .modal-cancel { background: none; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 8px 16px; font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); cursor: pointer; }
+  .modal-cancel:hover { background: var(--paper2); }
+  .modal-confirm { background: var(--ink); color: var(--paper); border: none; border-radius: var(--radius); padding: 8px 18px; font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; }
+  .modal-confirm:hover { background: #3a3020; }
+
+  /* ── Practice page ── */
+  .practice-page { text-align: center; }
+  .practice-mode-toggle { display: inline-flex; direction: ltr; margin-bottom: 1.75rem; border: 1.5px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--paper2); }
+  .practice-mode-btn { font-family: 'DM Mono', monospace; font-size: 12px; padding: 7px 20px; background: none; border: none; color: var(--muted); cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+  .practice-mode-btn.active { background: var(--ink); color: var(--paper); }
+  .practice-mode-btn:not(.active):hover { background: var(--paper3); color: var(--ink); }
+  .practice-mode-btn:disabled { opacity: 0.35; cursor: default; }
+  .progress-wrap { margin-bottom: 1.5rem; }
+  .progress-track { background: var(--paper3); border-radius: 999px; height: 4px; overflow: hidden; margin-bottom: 6px; border: 0.5px solid var(--border); }
+  .progress-fill { height: 100%; background: var(--ink); border-radius: 999px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .progress-text { font-size: 11px; color: var(--muted); direction: ltr; }
+  .restart-banner { background: var(--red-light); border: 1px solid #e8aaaa; border-radius: var(--radius); color: var(--red); font-size: 12px; padding: 8px 14px; margin-bottom: 1rem; direction: ltr; display: none; animation: fadeIn 0.2s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .word-card { background: var(--paper); border: 1.5px solid var(--border); border-radius: 12px; padding: 3rem 2rem 2.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; min-height: 160px; display: flex; align-items: center; justify-content: center; }
+  .word-card::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 27px, var(--paper3) 27px, var(--paper3) 28px); opacity: 0.5; pointer-events: none; }
+  .practice-word { font-family: 'Amiri', serif; font-size: 72px; font-weight: 700; color: var(--ink); direction: rtl; line-height: 1.2; position: relative; animation: wordIn 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+  .practice-phrase { font-family: 'Amiri', serif; font-size: 34px; font-weight: 400; color: var(--ink); direction: rtl; line-height: 1.5; position: relative; animation: wordIn 0.25s cubic-bezier(0.34,1.56,0.64,1); max-width: 600px; }
+  @keyframes wordIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+  .practice-translation { font-family: 'DM Mono', monospace; font-size: 22px; color: var(--muted); direction: ltr; line-height: 1.5; position: relative; animation: wordIn 0.2s ease; max-width: 560px; }
+  /* card-toggle pill (Arabic/Translation) */
+  .card-toggle { display: inline-flex; direction: ltr; margin-bottom: 1.5rem; border: 1.5px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--paper2); }
+  .card-toggle-btn { font-family: 'DM Mono', monospace; font-size: 11px; padding: 5px 14px; background: none; border: none; color: var(--muted); cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+  .card-toggle-btn.active { background: var(--ink); color: var(--paper); }
+  .card-toggle-btn:not(.active):hover { background: var(--paper3); color: var(--ink); }
+  .answer-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 1.5rem; }
+  .btn-wrong { background: var(--red-light); border: 1.5px solid #e8aaaa; color: var(--red); font-family: 'DM Mono', monospace; font-size: 14px; padding: 14px 36px; border-radius: var(--radius); cursor: pointer; transition: background 0.12s; direction: ltr; }
+  .btn-wrong:hover { background: #f5d5d5; }
+  .btn-correct { background: var(--green-light); border: 1.5px solid #9acfae; color: var(--green); font-family: 'DM Mono', monospace; font-size: 14px; padding: 14px 36px; border-radius: var(--radius); cursor: pointer; transition: background 0.12s; direction: ltr; }
+  .btn-correct:hover { background: #cfe8d8; }
+  .back-link { font-size: 12px; color: var(--muted); cursor: pointer; background: none; border: none; font-family: 'DM Mono', monospace; direction: ltr; padding: 6px 0; text-decoration: underline; text-underline-offset: 3px; }
+  .back-link:hover { color: var(--ink); }
+  .win-screen { padding: 3rem 0; }
+  .win-star { font-size: 52px; margin-bottom: 1rem; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+  .win-title { font-family: 'Amiri', serif; font-size: 36px; font-weight: 700; margin-bottom: 0.5rem; color: var(--ink); }
+  .win-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; direction: ltr; }
+
+  /* ── Export card ── */
+  #export-card { position: fixed; left: -9999px; top: 0; width: 720px; background: #f5f0e8; padding: 44px 48px 48px; font-family: 'DM Mono', monospace; }
+  #export-card .ec-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; padding-bottom: 16px; border-bottom: 1.5px solid #c8bfae; }
+  #export-card .ec-logo { font-size: 15px; font-weight: 500; color: #1a1208; }
+  #export-card .ec-sub { font-size: 11px; color: #7a6e5e; letter-spacing: 0.12em; text-transform: uppercase; }
+  #export-card .ec-listname { font-size: 13px; color: #1a1208; font-weight: 500; margin-bottom: 16px; padding-top: 6px; }
+  #export-card .ec-table { width: 100%; border-collapse: collapse; }
+  #export-card .ec-table thead th { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #7a6e5e; font-weight: 500; padding: 0 14px 10px; border-bottom: 1px solid #c8bfae; }
+  #export-card .ec-table thead th.col-ar { text-align: right; direction: rtl; }
+  #export-card .ec-table thead th.col-en { text-align: left; direction: ltr; }
+  #export-card .ec-table thead th.col-pri { text-align: center; width: 100px; }
+  #export-card .ec-row td { padding: 11px 14px; border-bottom: 0.5px solid #e2dace; vertical-align: middle; }
+  #export-card .ec-row.p1 td { background: #fdf0d5; }
+  #export-card .ec-row.p2 td { background: #fceee9; }
+  #export-card .ec-ar { font-family: 'Amiri', serif; font-size: 22px; color: #1a1208; text-align: right; direction: rtl; line-height: 1.4; }
+  #export-card .ec-row.p2 .ec-ar { color: #b84a2a; }
+  #export-card .ec-en { font-size: 12px; text-align: left; direction: ltr; color: #7a6e5e; }
+  #export-card .ec-en.filled { color: #1a1208; }
+  #export-card .ec-pri { text-align: center; font-size: 10px; font-weight: 500; }
+  #export-card .ec-badge { display: inline-block; border-radius: 999px; padding: 2px 8px; background: rgba(0,0,0,0.07); color: #7a6e5e; }
+  #export-card .ec-row.p1 .ec-badge { background: rgba(200,131,10,0.18); color: #c8830a; }
+  #export-card .ec-row.p2 .ec-badge { background: rgba(184,74,42,0.18); color: #b84a2a; }
+  #export-card .ec-footer { margin-top: 24px; padding-top: 14px; border-top: 1px solid #c8bfae; font-size: 10px; color: #7a6e5e; letter-spacing: 0.08em; direction: ltr; }
+
+  /* ── Toast ── */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(8px); background: #1a1208; color: #f5f0e8; font-family: 'DM Mono', monospace; font-size: 12px; padding: 10px 18px; border-radius: 6px; opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 999; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── iOS safe area (notch / Dynamic Island / home bar) ── */
+  body { padding-top: env(safe-area-inset-top); }
+  header { padding-left: max(2rem, calc(1rem + env(safe-area-inset-left))); padding-right: max(2rem, calc(1rem + env(safe-area-inset-right))); }
+  .lists-bar, .tab-nav { padding-left: max(2rem, calc(1rem + env(safe-area-inset-left))); padding-right: max(2rem, calc(1rem + env(safe-area-inset-right))); }
+  .page { padding-bottom: max(2rem, calc(1rem + env(safe-area-inset-bottom))); }
+
+  /* ── Mobile touch improvements ── */
+  * { -webkit-tap-highlight-color: transparent; }
+  input, textarea, select, button { font-size: 16px; } /* prevents iOS zoom on focus */
+  .add-textarea { font-size: 18px; }
+  .practice-word { font-size: clamp(48px, 14vw, 72px); }
+  .practice-phrase { font-size: clamp(22px, 6vw, 34px); }
+
+  /* ── Grammar Study modal ── */
+  .gs-backdrop { display: none; position: fixed; inset: 0; background: rgba(26,18,8,0.55); z-index: 200; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
+  .gs-backdrop.open { display: flex; }
+  .gs-modal { background: var(--paper); border: 1.5px solid var(--border); border-radius: 12px; width: 680px; max-width: 98vw; direction: ltr; display: flex; flex-direction: column; overflow: hidden; }
+  .gs-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .gs-title { font-size: 13px; font-weight: 500; color: var(--ink); flex: 1; }
+  .gs-close { background: none; border: none; font-size: 18px; color: var(--muted); cursor: pointer; padding: 2px 6px; line-height: 1; }
+  .gs-close:hover { color: var(--ink); }
+  .gs-phrase-wrap { padding: 1.75rem 1.5rem 1.25rem; background: var(--paper); border-bottom: 1px solid var(--paper3); text-align: center; }
+  .gs-phrase-hint { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; direction: ltr; }
+  .gs-phrase-text { font-family: 'Amiri', serif; font-size: 42px; line-height: 1.7; direction: rtl; display: inline-block; user-select: none; }
+  .gs-char { display: inline; cursor: pointer; border-radius: 3px; padding: 0 1px; transition: color 0.1s, background 0.1s; position: relative; }
+  .gs-char.space { cursor: default; }
+  .gs-char:not(.space):hover { background: var(--paper3); }
+  .gs-char.in-drag { color: #c0392b; background: #fde8e8; }
+  .gs-char.annotated { color: #c0392b; }
+  .gs-char.annotated.note-hovered { background: #fde8e8; border-radius: 3px; box-shadow: 0 0 0 2px #f09090; }
+  .gs-input-area { padding: 1rem 1.5rem; border-bottom: 1px solid var(--paper3); background: var(--paper2); }
+  .gs-selection-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; direction: ltr; min-height: 18px; }
+  .gs-selection-label .sel-text { font-family: 'Amiri', serif; font-size: 16px; color: #c0392b; direction: rtl; display: inline; }
+  .gs-note-row { display: flex; gap: 8px; align-items: flex-end; }
+  .gs-note-input { flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink); outline: none; resize: none; height: 60px; transition: border-color 0.15s; direction: ltr; }
+  .gs-note-input:focus { border-color: var(--amber); }
+  .gs-note-input::placeholder { color: var(--muted); }
+  .gs-add-note-btn { height: 60px; padding: 0 18px; background: var(--ink); color: var(--paper); border: none; border-radius: var(--radius); font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; white-space: nowrap; transition: background 0.12s; }
+  .gs-add-note-btn:hover { background: #3a3020; }
+  .gs-add-note-btn:disabled { opacity: 0.35; cursor: default; }
+  .gs-notes-area { padding: 1rem 1.5rem; max-height: 320px; overflow-y: auto; }
+  .gs-notes-empty { font-size: 12px; color: var(--muted); font-style: italic; padding: 8px 0; }
+  .gs-note-item { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--radius); margin-bottom: 6px; background: var(--paper2); border: 1px solid var(--paper3); cursor: default; transition: background 0.15s, border-color 0.15s; }
+  .gs-note-item.note-glowing { background: #fde8e8 !important; border-color: #f09090 !important; }
+  .gs-note-item.needs-study { background: #fef9e0 !important; border-color: var(--amber-border) !important; }
+  .gs-note-item.needs-study .gs-note-chars { color: #c8830a; }
+  .gs-note-item.needs-study.note-glowing { background: #fdefc0 !important; border-color: var(--amber) !important; }
+  .gs-note-item .gs-study-badge { font-size: 10px; font-weight: 500; color: var(--amber); background: var(--amber-light); border: 1px solid var(--amber-border); border-radius: 999px; padding: 1px 7px; flex-shrink: 0; align-self: flex-start; margin-top: 3px; white-space: nowrap; }
+  .gs-char.annotated-study { color: #c8830a; }
+  .gs-char.annotated-study.note-hovered { background: var(--amber-light); box-shadow: 0 0 0 2px var(--amber-border); }
+  .gs-add-study-btn { height: 60px; padding: 0 16px; background: var(--amber-light); color: var(--amber); border: 1.5px solid var(--amber-border); border-radius: var(--radius); font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background 0.12s; flex-shrink: 0; }
+  .gs-add-study-btn:hover { background: #fbe8c0; }
+  .gs-add-study-btn:disabled { opacity: 0.35; cursor: default; }
+  .phrase-annotated-char.study { color: #c8830a; }
+  .gs-note-chars { font-family: 'Amiri', serif; font-size: 20px; color: #c0392b; direction: rtl; white-space: nowrap; flex-shrink: 0; line-height: 1.5; min-width: 36px; text-align: right; }
+  .gs-note-text { font-size: 12px; color: var(--ink); line-height: 1.6; flex: 1; padding-top: 2px; white-space: pre-wrap; }
+  .gs-note-del { background: none; border: none; color: var(--border); cursor: pointer; font-size: 13px; padding: 2px 4px; flex-shrink: 0; }
+  .gs-note-del:hover { color: var(--red); }
+  .btn-grammar { background: none; border: 1px solid var(--blue-border); color: var(--blue); border-radius: var(--radius); font-family: 'DM Mono', monospace; font-size: 11px; padding: 3px 9px; cursor: pointer; white-space: nowrap; transition: background 0.12s; }
+  .btn-grammar:hover { background: var(--blue-light); }
+  .btn-grammar.has-notes { background: var(--blue-light); font-weight: 500; }
+
+  /* ── Category badges ── */
+  .cat-badge { display: inline-block; font-size: 10px; font-weight: 500; border-radius: 999px; padding: 2px 8px; direction: ltr; white-space: nowrap; }
+  .cat-noun      { background: #e8f0fa; color: #1e4f82; border: 1px solid #7aacd4; }
+  .cat-verb      { background: #e8f5ed; color: #2a6e3f; border: 1px solid #6db88a; }
+  .cat-adjective { background: #fdf0d5; color: #7a4d00; border: 1px solid #e8b84b; }
+  .cat-other     { background: var(--paper3); color: var(--muted); border: 1px solid var(--border); }
+  .cat-select { background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 10px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink); outline: none; cursor: pointer; height: 46px; direction: ltr; }
+  .cat-select:focus { border-color: var(--amber); }
+
+  /* ── Category tab pills (in add area) ── */
+  .cat-tabs { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; direction: ltr; }
+  .cat-tab { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; padding: 4px 14px; border-radius: 999px; border: 1.5px solid transparent; cursor: pointer; transition: opacity 0.12s, box-shadow 0.12s, transform 0.08s; opacity: 0.45; }
+  .cat-tab:hover { opacity: 0.75; }
+  .cat-tab.active { opacity: 1; box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px currentColor; transform: none; }
+  .cat-tab.cat-other     { background: var(--paper3);      color: var(--muted);   border-color: var(--border);   }
+  .cat-tab.cat-noun      { background: var(--blue-light);  color: var(--blue);    border-color: var(--blue-border);  }
+  .cat-tab.cat-verb      { background: var(--green-light); color: var(--green);   border-color: #6db88a;  }
+  .cat-tab.cat-adjective { background: var(--amber-light); color: #7a4d00;        border-color: var(--amber-border); }
+
+  /* ── Search bar ── */
+  .search-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; direction: ltr; }
+  .search-input { flex: 1; background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 14px 8px 36px; font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink); outline: none; transition: border-color 0.15s; direction: ltr; background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='4.5' stroke='%237a6e5e' stroke-width='1.3'/%3E%3Cpath d='M9.5 9.5L12 12' stroke='%237a6e5e' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 10px center; }
+  .search-input:focus { border-color: var(--amber); }
+  .search-input::placeholder { color: var(--muted); }
+  .search-result-count { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .search-highlight { background: #ffeea0; border-radius: 2px; }
+
+  /* ── Sort controls ── */
+  .sort-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem; direction: ltr; flex-wrap: wrap; }
+  .sort-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .sort-btn { font-family: 'DM Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--paper); color: var(--muted); cursor: pointer; transition: background 0.1s, border-color 0.1s, color 0.1s; white-space: nowrap; }
+  .sort-btn:hover { background: var(--paper3); color: var(--ink); }
+  .sort-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* ── Annotated phrase in list (red chars) ── */
+  .phrase-annotated-char { color: #c0392b; }
+
+  /* ── Study Timer (header) ── */
+  .timer-widget { display: flex; align-items: center; gap: 6px; direction: ltr; flex-shrink: 0; }
+  .timer-display { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--ink); background: var(--paper2); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 10px; min-width: 54px; text-align: center; cursor: pointer; transition: border-color 0.12s; letter-spacing: 0.05em; }
+  .timer-display:hover { border-color: var(--amber); }
+  .timer-display.running { color: var(--green); border-color: #6db88a; background: var(--green-light); }
+  .timer-display.urgent  { color: var(--red);   border-color: #e8aaaa; background: var(--red-light); animation: timerPulse 1s ease infinite; }
+  @keyframes timerPulse { 0%,100%{ opacity:1; } 50%{ opacity:0.6; } }
+  .timer-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 8px; font-size: 13px; cursor: pointer; color: var(--muted); transition: background 0.1s, border-color 0.1s, color 0.1s; }
+  .timer-btn:hover { background: var(--paper2); color: var(--ink); border-color: var(--ink); }
+  .timer-set-input { width: 48px; font-family: 'DM Mono', monospace; font-size: 12px; background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 6px; color: var(--ink); outline: none; text-align: center; }
+  .timer-set-input:focus { border-color: var(--amber); }
+
+  /* ── Timer alarm overlay ── */
+  .alarm-overlay { display: none; position: fixed; inset: 0; background: rgba(26,18,8,0.6); z-index: 500; align-items: center; justify-content: center; }
+  .alarm-overlay.open { display: flex; }
+  .alarm-box { background: var(--paper); border: 2px solid var(--green); border-radius: 12px; padding: 2.5rem 2rem; text-align: center; direction: ltr; max-width: 320px; animation: alarmPop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes alarmPop { from{ transform:scale(0.7); opacity:0; } to{ transform:scale(1); opacity:1; } }
+  .alarm-icon { font-size: 40px; margin-bottom: 0.75rem; }
+  .alarm-title { font-size: 18px; font-weight: 500; color: var(--ink); margin-bottom: 0.4rem; }
+  .alarm-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  .alarm-dismiss { background: var(--ink); color: var(--paper); border: none; border-radius: var(--radius); padding: 10px 24px; font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; }
+  .alarm-dismiss:hover { background: #3a3020; }
+
+  /* ── Custom category ── */
+  .cat-tab.cat-custom { background: #f0eaf8; color: #5a2d82; border-color: #b89fd4; }
+  .cat-tab.cat-add    { background: none; color: var(--muted); border: 1.5px dashed var(--border); opacity: 0.7; }
+  .cat-tab.cat-add:hover { border-color: var(--ink); color: var(--ink); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">New Language Challenges</div>
+  <div class="logo-ar">تحديات لغوية</div>
+  <div class="header-spacer"></div>
+  <div id="header-list-name" class="header-list-name unsaved" onclick="openSaveModal()" title="Click to save / rename">Unsaved list</div>
+  <div class="timer-widget">
+    <input type="number" class="timer-set-input" id="timer-min-input" min="1" max="180" value="25" title="Minutes">
+    <button class="timer-btn" id="timer-start-btn" onclick="timerToggle()" title="Start / Pause">▶</button>
+    <div class="timer-display" id="timer-display" onclick="timerToggle()" title="Click to start/pause">25:00</div>
+    <button class="timer-btn" onclick="timerReset()" title="Reset">↺</button>
+  </div>
+</header>
+
+<!-- Tab nav -->
+<nav class="tab-nav">
+  <button class="tab-btn active" id="tab-words"    onclick="switchTab('words')">Words</button>
+  <button class="tab-btn"        id="tab-phrases"  onclick="switchTab('phrases')">Phrases</button>
+  <button class="tab-btn"        id="tab-practice" onclick="switchTab('practice')">Practice</button>
+</nav>
+
+<!-- Lists bar -->
+<div class="lists-bar" id="lists-bar">
+  <span class="lists-bar-label">Saved</span>
+  <span class="lists-bar-empty" id="lists-bar-empty">No saved lists yet</span>
+  <button class="btn-new-list" onclick="newList()">+ New list</button>
+  <div class="lists-bar-sep"></div>
+  <button class="btn-data" onclick="exportJSON()">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v7M3.5 5.5L6 8l2.5-2.5M1 10h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Backup
+  </button>
+  <button class="btn-data" onclick="document.getElementById('import-file').click()">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 8V1M3.5 3.5L6 1l2.5 2.5M1 10h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Restore
+  </button>
+  <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+</div>
+
+<!-- ══ PAGE: WORDS ══ -->
+<div id="page-words" class="page active">
+  <div class="add-area">
+    <div class="section-label">Add words</div>
+    <div class="add-row">
+      <textarea id="word-input" class="add-textarea words-box" placeholder="أضف كلمة أو عدة كلمات...&#10;Paste words here — space or line separated"></textarea>
+      <button class="btn btn-primary" onclick="addWords()">Add</button>
+    </div>
+    <div class="cat-tabs" id="cat-tabs">
+      <button class="cat-tab cat-other active" id="cattab-other"      onclick="selectCatTab('other')">Other</button>
+      <button class="cat-tab cat-noun"          id="cattab-noun"       onclick="selectCatTab('noun')">Noun</button>
+      <button class="cat-tab cat-verb"          id="cattab-verb"       onclick="selectCatTab('verb')">Verb</button>
+      <button class="cat-tab cat-adjective"     id="cattab-adjective"  onclick="selectCatTab('adjective')">Adjective</button>
+      <button class="cat-tab cat-add"           id="cattab-add"        onclick="addCustomCategory()">+ New</button>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" class="search-input" id="word-search" placeholder="Search words or translations…" oninput="renderWords()">
+    <span class="search-result-count" id="word-search-count"></span>
+  </div>
+
+  <div id="sort-bar-wrap"></div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-pip"></div>Normal (×1)</div>
+    <div class="legend-item"><div class="legend-pip p1"></div>Practice more (×2)</div>
+    <div class="legend-item"><div class="legend-pip p2"></div>Practice most (×3)</div>
+  </div>
+  <div id="word-list-wrap"><span class="empty-state">No words yet — add some above.</span></div>
+
+  <div class="bottom-bar">
+    <span class="item-count" id="word-count"></span>
+    <button class="btn-sm btn-save" id="save-btn-w" onclick="openSaveModal()" disabled>
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 2h7l2 2v7a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M4 12V8h5v4M4 2v3h4V2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Save
+    </button>
+    <button class="btn-sm" id="export-btn-w" onclick="exportImage('words')" disabled>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Export image
+    </button>
+    <button class="btn btn-primary" id="practice-words-btn" onclick="switchTab('practice')" disabled>Practice words →</button>
+  </div>
+</div>
+
+<!-- ══ PAGE: PHRASES ══ -->
+<div id="page-phrases" class="page">
+  <div class="add-area">
+    <div class="section-label">Add phrases / expressions</div>
+    <div class="add-row">
+      <textarea id="phrase-input" class="add-textarea phrases-box" placeholder="أضف جملة أو عبارة...&#10;Each new line = one phrase. Paste multiple lines at once."></textarea>
+      <button class="btn btn-primary" onclick="addPhrases()">Add</button>
+    </div>
+    <div class="add-hint">Each line is a separate phrase. Spaces within a line are fine — only a new line creates a new entry.</div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" class="search-input" id="phrase-search" placeholder="Search phrases or translations…" oninput="renderPhrases()">
+    <span class="search-result-count" id="phrase-search-count"></span>
+  </div>
+
+  <div class="sort-bar" style="margin-bottom:0.75rem;">
+    <span class="sort-label">Filter:</span>
+    <button class="sort-btn active" id="pf-all"    onclick="setPhraseFilter('all')">All</button>
+    <button class="sort-btn"        id="pf-red"    onclick="setPhraseFilter('red')" style="color:#c0392b;border-color:#f09090;">● Grammar notes</button>
+    <button class="sort-btn"        id="pf-yellow" onclick="setPhraseFilter('yellow')" style="color:#c8830a;border-color:var(--amber-border);">● Needs study</button>
+    <button class="sort-btn"        id="pf-any"    onclick="setPhraseFilter('any')">● Any grammar</button>
+  </div>
+
+  <div class="section-label">Your phrases — click a row to set priority</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-pip"></div>Normal (×1)</div>
+    <div class="legend-item"><div class="legend-pip p1"></div>Practice more (×2)</div>
+    <div class="legend-item"><div class="legend-pip p2"></div>Practice most (×3)</div>
+  </div>
+  <div id="phrase-list-wrap"><span class="empty-state">No phrases yet — add some above.</span></div>
+
+  <div class="bottom-bar">
+    <span class="item-count" id="phrase-count"></span>
+    <button class="btn-sm btn-save" id="save-btn-p" onclick="openSaveModal()" disabled>
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 2h7l2 2v7a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M4 12V8h5v4M4 2v3h4V2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Save
+    </button>
+    <button class="btn-sm" id="export-btn-p" onclick="exportImage('phrases')" disabled>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Export image
+    </button>
+    <button class="btn btn-primary" id="practice-phrases-btn" onclick="switchTab('practice')" disabled>Practice phrases →</button>
+  </div>
+</div>
+
+<!-- ══ PAGE: PRACTICE ══ -->
+<div id="page-practice" class="page">
+  <div class="practice-page">
+    <!-- Mode toggle: Words / Phrases -->
+    <div class="practice-mode-toggle" id="practice-mode-toggle">
+      <button class="practice-mode-btn active" id="pm-words"   onclick="setPracticeMode('words')">Words</button>
+      <button class="practice-mode-btn"        id="pm-phrases" onclick="setPracticeMode('phrases')">Phrases</button>
+    </div>
+    <div id="practice-inner"></div>
+  </div>
+</div>
+
+<!-- Off-screen export card -->
+<div id="export-card">
+  <div class="ec-header">
+    <div class="ec-logo">New Language Challenges</div>
+    <div class="ec-sub" id="ec-sub-type"></div>
+  </div>
+  <div class="ec-listname" id="ec-listname"></div>
+  <table class="ec-table">
+    <thead><tr>
+      <th class="col-ar" id="ec-th-ar">Arabic</th>
+      <th class="col-en">Translation</th>
+      <th class="col-pri">Priority</th>
+    </tr></thead>
+    <tbody id="ec-tbody"></tbody>
+  </table>
+  <div class="ec-footer" id="ec-footer"></div>
+</div>
+
+<!-- Grammar Study modal -->
+<div class="gs-backdrop" id="gs-backdrop">
+  <div class="gs-modal">
+    <div class="gs-header">
+      <div class="gs-title" id="gs-title">Grammar Study</div>
+      <button class="gs-close" onclick="closeGrammarModal()">✕</button>
+    </div>
+    <div class="gs-phrase-wrap">
+      <div class="gs-phrase-hint">Click a letter — or click and drag to select a group of letters</div>
+      <div class="gs-phrase-text" id="gs-phrase-text"></div>
+    </div>
+    <div class="gs-input-area">
+      <div class="gs-selection-label" id="gs-sel-label">Select letters above to annotate them</div>
+      <div class="gs-note-row">
+        <textarea class="gs-note-input" id="gs-note-input" placeholder="Write your grammar note here… (optional — leave blank and click ? to mark for later)" disabled></textarea>
+        <button class="gs-add-study-btn" id="gs-add-study-btn" onclick="addGrammarNote(true)" title="Mark as 'needs study' — I don't understand this yet" disabled>?</button>
+        <button class="gs-add-note-btn" id="gs-add-note-btn" onclick="addGrammarNote(false)" disabled>Add note</button>
+      </div>
+    </div>
+    <div class="gs-notes-area" id="gs-notes-area">
+      <div class="gs-notes-empty">No grammar notes yet.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Alarm overlay -->
+<div class="alarm-overlay" id="alarm-overlay">
+  <div class="alarm-box">
+    <div class="alarm-icon">⏰</div>
+    <div class="alarm-title">Time's up!</div>
+    <div class="alarm-sub">Your study session is complete. Great work!</div>
+    <button class="alarm-dismiss" onclick="dismissAlarm()">Done</button>
+  </div>
+</div>
+
+<!-- Save modal -->
+<div class="modal-backdrop" id="save-modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Save list</div>
+    <input type="text" id="list-name-input" placeholder="e.g. Chapter 3 vocabulary" maxlength="60">
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let words   = [];   // { text, translation, clicks, category }
+let phrases = [];   // { text, translation, clicks, grammarNotes }
+let currentListName = '';
+let currentTab = 'words';
+let practiceMode = 'words';  // 'words' | 'phrases'
+let wordSort = 'all';        // 'all' | 'noun' | 'verb' | 'adjective' | 'other'
+let phraseGrammarFilter = 'all'; // 'all' | 'red' | 'yellow' | 'any'
+
+function setPhraseFilter(f) {
+  phraseGrammarFilter = f;
+  ['all','red','yellow','any'].forEach(k => {
+    document.getElementById(`pf-${k}`)?.classList.toggle('active', k === f);
+  });
+  renderPhrases();
+}
+let queue = [], idx = 0, total = 0, showingArabic = true;
+const STORAGE_KEY = 'nlc_lists';
+
+/* ══════════════════════════════════════════
+   TAB NAVIGATION
+══════════════════════════════════════════ */
+function switchTab(tab) {
+  currentTab = tab;
+  ['words','phrases','practice'].forEach(t => {
+    document.getElementById(`page-${t}`).classList.toggle('active', t === tab);
+    document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+  });
+  if (tab === 'practice') {
+    updatePracticeModeToggle();
+    startPracticeSession();
+  }
+}
+
+function updatePracticeModeToggle() {
+  const hasW = words.length > 0;
+  const hasP = phrases.length > 0;
+  document.getElementById('pm-words').disabled   = !hasW;
+  document.getElementById('pm-phrases').disabled = !hasP;
+  // auto-select a valid mode
+  if (practiceMode === 'words' && !hasW && hasP)   practiceMode = 'phrases';
+  if (practiceMode === 'phrases' && !hasP && hasW)  practiceMode = 'words';
+  document.getElementById('pm-words').classList.toggle('active',   practiceMode === 'words');
+  document.getElementById('pm-phrases').classList.toggle('active', practiceMode === 'phrases');
+}
+
+function setPracticeMode(mode) {
+  practiceMode = mode;
+  updatePracticeModeToggle();
+  startPracticeSession();
+}
+
+/* ══════════════════════════════════════════
+   PERSISTENCE
+══════════════════════════════════════════ */
+function loadAllLists() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function saveAllLists(lists) { localStorage.setItem(STORAGE_KEY, JSON.stringify(lists)); }
+
+function saveCurrentList(name) {
+  const lists = loadAllLists();
+  lists[name] = { name, words, phrases, savedAt: Date.now() };
+  saveAllLists(lists);
+  currentListName = name;
+  updateHeaderName();
+  renderListsBar();
+  showToast(`"${name}" saved.`);
+}
+
+function loadList(name) {
+  const lists = loadAllLists();
+  if (!lists[name]) return;
+  words   = (lists[name].words   || []).map(w => ({ text: w.text, translation: w.translation || '', clicks: w.clicks || 0, category: w.category || 'other' }));
+  phrases = (lists[name].phrases || []).map(p => ({ text: p.text, translation: p.translation || '', clicks: p.clicks || 0, grammarNotes: p.grammarNotes || [] }));
+  currentListName = name;
+  updateHeaderName();
+  renderWords();
+  renderPhrases();
+}
+
+function deleteList(name) {
+  const lists = loadAllLists();
+  delete lists[name];
+  saveAllLists(lists);
+  if (currentListName === name) { currentListName = ''; updateHeaderName(); }
+  renderListsBar();
+  showToast(`"${name}" deleted.`);
+}
+
+function autoSave() { if (currentListName) saveCurrentList(currentListName); }
+
+/* ══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════ */
+function updateHeaderName() {
+  const el = document.getElementById('header-list-name');
+  if (currentListName) {
+    el.textContent = currentListName;
+    el.classList.remove('unsaved');
+  } else {
+    el.textContent = 'Unsaved list';
+    el.classList.add('unsaved');
+  }
+}
+
+/* ══════════════════════════════════════════
+   LISTS BAR
+══════════════════════════════════════════ */
+function renderListsBar() {
+  const bar = document.getElementById('lists-bar');
+  const lists = loadAllLists();
+  const names = Object.keys(lists).sort((a,b) => lists[b].savedAt - lists[a].savedAt);
+
+  const label    = bar.querySelector('.lists-bar-label');
+  const newBtn   = bar.querySelector('.btn-new-list');
+  const sep      = bar.querySelector('.lists-bar-sep');
+  const dataBtns = [...bar.querySelectorAll('.btn-data')];
+  const fileInput= bar.querySelector('#import-file');
+  bar.innerHTML  = '';
+  bar.appendChild(label);
+
+  if (!names.length) {
+    const empty = document.createElement('span');
+    empty.className = 'lists-bar-empty'; empty.id = 'lists-bar-empty';
+    empty.textContent = 'No saved lists yet';
+    bar.appendChild(empty);
+  } else {
+    names.forEach(name => {
+      const chip = document.createElement('span');
+      chip.className = 'list-chip' + (name === currentListName ? ' active-list' : '');
+      chip.innerHTML = `${name}<span class="list-chip-x" title="Delete">✕</span>`;
+      chip.querySelector('.list-chip-x').addEventListener('click', e => {
+        e.stopPropagation();
+        if (confirm(`Delete list "${name}"?`)) deleteList(name);
+      });
+      chip.addEventListener('click', () => {
+        if (name === currentListName) return;
+        const hasUnsaved = (words.length || phrases.length) && !currentListName;
+        if (hasUnsaved && !confirm('Load this list? Unsaved items will be lost.')) return;
+        loadList(name); renderListsBar();
+      });
+      bar.appendChild(chip);
+    });
+  }
+  bar.appendChild(newBtn);
+  bar.appendChild(sep);
+  dataBtns.forEach(b => bar.appendChild(b));
+  bar.appendChild(fileInput);
+}
+
+/* ══════════════════════════════════════════
+   SAVE MODAL
+══════════════════════════════════════════ */
+function openSaveModal() {
+  document.getElementById('modal-title').textContent = currentListName ? 'Rename / save list' : 'Save list';
+  document.getElementById('list-name-input').value = currentListName || '';
+  document.getElementById('save-modal').classList.add('open');
+  setTimeout(() => document.getElementById('list-name-input').focus(), 50);
+}
+function closeModal() { document.getElementById('save-modal').classList.remove('open'); }
+function confirmSave() {
+  const name = document.getElementById('list-name-input').value.trim();
+  if (!name) { document.getElementById('list-name-input').focus(); return; }
+  closeModal(); saveCurrentList(name);
+}
+document.getElementById('list-name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmSave();
+  if (e.key === 'Escape') closeModal();
+});
+document.getElementById('save-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('save-modal')) closeModal();
+});
+
+/* ══════════════════════════════════════════
+   NEW LIST
+══════════════════════════════════════════ */
+function newList() {
+  if ((words.length || phrases.length) && !confirm('Start a new list? Unsaved items will be lost.')) return;
+  words = []; phrases = []; currentListName = '';
+  updateHeaderName(); renderWords(); renderPhrases(); renderListsBar();
+}
+
+/* ══════════════════════════════════════════
+   CUSTOM CATEGORIES
+══════════════════════════════════════════ */
+const BUILTIN_CATS = ['other','noun','verb','adjective'];
+let customCats = JSON.parse(localStorage.getItem('nlc_custom_cats') || '[]');
+let selectedCat = 'other';
+
+function saveCats() { localStorage.setItem('nlc_custom_cats', JSON.stringify(customCats)); }
+
+function allCats() { return [...BUILTIN_CATS, ...customCats]; }
+
+function catColor(cat) {
+  const map = { noun:'--blue', verb:'--green', adjective:'--amber', other:'--muted' };
+  return map[cat] || null; // null = custom (purple)
+}
+
+function renderCatTabs() {
+  const wrap = document.getElementById('cat-tabs');
+  const allC = allCats();
+  wrap.innerHTML = allC.map(c => {
+    const isBuiltin = BUILTIN_CATS.includes(c);
+    const cls = isBuiltin ? `cat-${c}` : 'cat-custom';
+    const label = c === 'other' ? 'Other' : c === 'noun' ? 'Noun' : c === 'verb' ? 'Verb' : c === 'adjective' ? 'Adjective' : c;
+    return `<button class="cat-tab ${cls}${selectedCat===c?' active':''}" id="cattab-${c}" onclick="selectCatTab('${c}')">${label}</button>`;
+  }).join('') + `<button class="cat-tab cat-add" onclick="addCustomCategory()">+ New</button>`;
+}
+
+function selectCatTab(cat) {
+  selectedCat = cat;
+  renderCatTabs();
+}
+
+function addCustomCategory() {
+  const name = prompt('Category name:');
+  if (!name || !name.trim()) return;
+  const key = name.trim().toLowerCase().replace(/\s+/g, '-');
+  if (allCats().includes(key)) { alert('That category already exists.'); return; }
+  customCats.push(key);
+  saveCats();
+  selectedCat = key;
+  renderCatTabs();
+  renderSortBar();
+}
+
+/* ── Sort bar (dynamic, includes custom cats) ── */
+function renderSortBar() {
+  const wrap = document.getElementById('sort-bar-wrap');
+  if (!wrap) return;
+  const allC = allCats();
+  const catLabels = { all:'All', other:'Others', noun:'Nouns', verb:'Verbs', adjective:'Adjectives' };
+  wrap.innerHTML = `<div class="sort-bar"><span class="sort-label">Filter:</span>` +
+    ['all', ...allC].map(c => {
+      const label = catLabels[c] || c;
+      return `<button class="sort-btn${wordSort===c?' active':''}" onclick="setSort('${c}')">${label}</button>`;
+    }).join('') +
+    `</div>`;
+}
+
+function setSort(cat) {
+  wordSort = cat;
+  renderSortBar();
+  renderWords();
+}
+
+/* ══════════════════════════════════════════
+   STUDY TIMER
+══════════════════════════════════════════ */
+let timerInterval = null;
+let timerSecondsLeft = 25 * 60;
+let timerRunning = false;
+let alarmAudio = null;
+
+function timerFormat(s) {
+  const m = Math.floor(s / 60), sec = s % 60;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+function timerRender() {
+  const disp = document.getElementById('timer-display');
+  const btn  = document.getElementById('timer-start-btn');
+  if (!disp) return;
+  disp.textContent = timerFormat(timerSecondsLeft);
+  disp.classList.toggle('running', timerRunning && timerSecondsLeft > 60);
+  disp.classList.toggle('urgent',  timerRunning && timerSecondsLeft <= 60 && timerSecondsLeft > 0);
+  btn.textContent = timerRunning ? '⏸' : '▶';
+}
+
+function timerToggle() {
+  if (timerRunning) {
+    clearInterval(timerInterval); timerRunning = false; timerRender(); return;
+  }
+  // If not started yet, read minutes input
+  if (!timerInterval && timerSecondsLeft === 0) timerReset();
+  timerRunning = true;
+  timerRender();
+  timerInterval = setInterval(() => {
+    timerSecondsLeft--;
+    timerRender();
+    if (timerSecondsLeft <= 0) {
+      clearInterval(timerInterval); timerInterval = null; timerRunning = false;
+      timerRender(); triggerAlarm();
+    }
+  }, 1000);
+}
+
+function timerReset() {
+  clearInterval(timerInterval); timerInterval = null; timerRunning = false;
+  const mins = parseInt(document.getElementById('timer-min-input')?.value) || 25;
+  timerSecondsLeft = Math.max(1, Math.min(180, mins)) * 60;
+  timerRender();
+}
+
+document.getElementById('timer-min-input')?.addEventListener('change', () => {
+  if (!timerRunning) timerReset();
+});
+
+function triggerAlarm() {
+  document.getElementById('alarm-overlay').classList.add('open');
+  // Generate a beep tone via Web Audio API
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const beep = (freq, start, dur) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.4, ctx.currentTime + start);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+      osc.start(ctx.currentTime + start);
+      osc.stop(ctx.currentTime + start + dur + 0.05);
+    };
+    beep(880, 0,   0.18);
+    beep(880, 0.22, 0.18);
+    beep(1100, 0.5, 0.35);
+  } catch(e) {}
+}
+
+function dismissAlarm() {
+  document.getElementById('alarm-overlay').classList.remove('open');
+  timerReset();
+}
+
+/* ══════════════════════════════════════════
+   WORDS — ADD
+══════════════════════════════════════════ */
+function addWords() {
+  const input = document.getElementById('word-input');
+  const val = input.value.trim();
+  if (!val) return;
+  val.split(/[\s\n]+/).filter(Boolean).forEach(w => {
+    if (!words.find(x => x.text === w)) words.push({ text: w, translation: '', clicks: 0, category: selectedCat });
+  });
+  input.value = '';
+  renderWords(); autoSave();
+}
+document.getElementById('word-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addWords(); }
+});
+
+/* ══════════════════════════════════════════
+   PHRASES — ADD
+══════════════════════════════════════════ */
+function addPhrases() {
+  const input = document.getElementById('phrase-input');
+  const val = input.value;
+  if (!val.trim()) return;
+  // Split only on newlines — spaces within a line are kept
+  val.split('\n').map(l => l.trim()).filter(Boolean).forEach(p => {
+    if (!phrases.find(x => x.text === p)) phrases.push({ text: p, translation: '', clicks: 0, grammarNotes: [] });
+  });
+  input.value = '';
+  renderPhrases(); autoSave();
+}
+// Shift+Enter = newline; Enter alone = add
+document.getElementById('phrase-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addPhrases(); }
+});
+
+/* ══════════════════════════════════════════
+   SHARED ROW ACTIONS
+══════════════════════════════════════════ */
+function clickWordRow(i)   { words[i].clicks   = (words[i].clicks   + 1) % 3; renderWords();   autoSave(); }
+function clickPhraseRow(i) { phrases[i].clicks = (phrases[i].clicks + 1) % 3; renderPhrases(); autoSave(); }
+function removeWord(e, i)   { e.stopPropagation(); words.splice(i,1);   renderWords();   autoSave(); }
+function removePhrase(e, i) { e.stopPropagation(); phrases.splice(i,1); renderPhrases(); autoSave(); }
+function updateWordTrans(i, val)   { words[i].translation   = val; autoSave(); }
+function updatePhraseTrans(i, val) { phrases[i].translation = val; autoSave(); }
+
+function transKeydown(e, i, type) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const next = document.getElementById(`trans-${type}-${i+1}`);
+    if (next) next.focus(); else e.target.blur();
+  }
+}
+
+/* ══════════════════════════════════════════
+   RENDER WORDS
+══════════════════════════════════════════ */
+const CAT_LABELS = { noun: 'Noun', verb: 'Verb', adjective: 'Adj.', other: 'Other' };
+function catBadge(cat) {
+  const c = cat || 'other';
+  return `<span class="cat-badge cat-${c}">${CAT_LABELS[c]||'Other'}</span>`;
+}
+function highlight(text, q) {
+  if (!q) return text;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return text.replace(re, '<mark class="search-highlight">$1</mark>');
+}
+
+function renderWords() {
+  const wrap    = document.getElementById('word-list-wrap');
+  const count   = document.getElementById('word-count');
+  const saveBtn = document.getElementById('save-btn-w');
+  const expBtn  = document.getElementById('export-btn-w');
+  const pracBtn = document.getElementById('practice-words-btn');
+  const q       = (document.getElementById('word-search')?.value || '').trim().toLowerCase();
+  const scEl    = document.getElementById('word-search-count');
+
+  if (!words.length) {
+    wrap.innerHTML = '<span class="empty-state">No words yet — add some above.</span>';
+    saveBtn.disabled = expBtn.disabled = pracBtn.disabled = true;
+    count.textContent = ''; if (scEl) scEl.textContent = ''; return;
+  }
+  saveBtn.disabled = expBtn.disabled = pracBtn.disabled = false;
+  const reps = words.reduce((s,w) => s + [1,2,3][w.clicks], 0);
+  count.textContent = `${words.length} word${words.length>1?'s':''} · ${reps} reps`;
+
+  // Filter by sort category
+  let filtered = wordSort === 'all' ? words : words.filter(w => (w.category||'other') === wordSort);
+  // Filter by search
+  if (q) filtered = filtered.filter(w => w.text.includes(q) || (w.translation||'').toLowerCase().includes(q));
+
+  if (scEl) scEl.textContent = q || wordSort !== 'all' ? `${filtered.length} shown` : '';
+
+  if (!filtered.length) {
+    wrap.innerHTML = `<span class="empty-state">No words match this filter.</span>`;
+    return;
+  }
+
+  // Map filtered back to original indices for click handlers
+  const indexedFiltered = filtered.map(w => ({ w, oi: words.indexOf(w) }));
+
+  wrap.innerHTML = `<table class="item-table">
+    <thead><tr>
+      <th class="col-ar">Arabic</th>
+      <th class="col-en" style="text-align:left;direction:ltr;">Translation</th>
+      <th style="text-align:center;width:76px;">Category</th>
+      <th class="col-pri">Priority</th>
+      <th style="width:36px;"></th>
+    </tr></thead>
+    <tbody>${indexedFiltered.map(({w, oi}) => {
+      const cls = w.clicks===1?'p1':w.clicks===2?'p2':'';
+      const pri = ['×1','×2','×3'][w.clicks];
+      const st  = (w.translation||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      const arH = highlight(w.text, q);
+      const enH = highlight(w.translation||'', q);
+      return `<tr class="item-row ${cls}" onclick="clickWordRow(${oi})">
+        <td class="cell-arabic">${arH}</td>
+        <td class="cell-trans" onclick="event.stopPropagation()">
+          <input type="text" id="trans-w-${oi}" value="${st}" placeholder="translation..."
+            oninput="updateWordTrans(${oi},this.value)"
+            onkeydown="transKeydown(event,${oi},'w')">
+        </td>
+        <td style="text-align:center;" onclick="event.stopPropagation()">
+          <select class="cat-select" style="height:30px;padding:2px 6px;font-size:11px;"
+            onchange="updateWordCat(${oi},this.value)">
+            ${allCats().map(c =>
+              `<option value="${c}"${(w.category||'other')===c?' selected':''}>${CAT_LABELS[c]||c}</option>`
+            ).join('')}
+          </select>
+        </td>
+        <td class="cell-priority"><span class="priority-badge">${pri}</span></td>
+        <td class="cell-remove"><button class="remove-btn" onclick="removeWord(event,${oi})">✕</button></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function updateWordCat(i, val) { words[i].category = val; autoSave(); }
+
+/* ══════════════════════════════════════════
+   RENDER PHRASES
+══════════════════════════════════════════ */
+function phraseWithRedChars(p) {
+  const redChars    = new Set();
+  const yellowChars = new Set();
+  (p.grammarNotes || []).forEach(n => {
+    n.indices.forEach(ci => {
+      if (n.needsStudy) yellowChars.add(ci);
+      else redChars.add(ci);
+    });
+  });
+  if (!redChars.size && !yellowChars.size) return p.text;
+  return [...p.text].map((ch, ci) => {
+    if (redChars.has(ci))    return `<span class="phrase-annotated-char">${ch}</span>`;
+    if (yellowChars.has(ci)) return `<span class="phrase-annotated-char study">${ch}</span>`;
+    return ch;
+  }).join('');
+}
+function renderPhrases() {
+  const wrap = document.getElementById('phrase-list-wrap');
+  const count = document.getElementById('phrase-count');
+  const saveBtn = document.getElementById('save-btn-p');
+  const expBtn  = document.getElementById('export-btn-p');
+  const pracBtn = document.getElementById('practice-phrases-btn');
+  const q       = (document.getElementById('phrase-search')?.value || '').trim().toLowerCase();
+  const scEl    = document.getElementById('phrase-search-count');
+
+  if (!phrases.length) {
+    wrap.innerHTML = '<span class="empty-state">No phrases yet — add some above.</span>';
+    saveBtn.disabled = expBtn.disabled = pracBtn.disabled = true;
+    count.textContent = ''; if (scEl) scEl.textContent = ''; return;
+  }
+  saveBtn.disabled = expBtn.disabled = pracBtn.disabled = false;
+  const reps = phrases.reduce((s,p) => s + [1,2,3][p.clicks], 0);
+  count.textContent = `${phrases.length} phrase${phrases.length>1?'s':''} · ${reps} reps`;
+
+  let filtered = phrases;
+  if (q) filtered = phrases.filter(p => p.text.includes(q) || (p.translation||'').toLowerCase().includes(q));
+
+  // Grammar filter
+  if (phraseGrammarFilter !== 'all') {
+    filtered = filtered.filter(p => {
+      const notes = p.grammarNotes || [];
+      if (phraseGrammarFilter === 'any')    return notes.length > 0;
+      if (phraseGrammarFilter === 'red')    return notes.some(n => !n.needsStudy);
+      if (phraseGrammarFilter === 'yellow') return notes.some(n =>  n.needsStudy);
+      return true;
+    });
+  }
+
+  if (scEl) scEl.textContent = (q || phraseGrammarFilter !== 'all') ? `${filtered.length} shown` : '';
+
+  if (!filtered.length) {
+    const msg = phraseGrammarFilter !== 'all'
+      ? 'No phrases match this grammar filter.'
+      : 'No phrases match this search.';
+    wrap.innerHTML = `<span class="empty-state">${msg}</span>`; return;
+  }
+
+  const indexedFiltered = filtered.map(p => ({ p, oi: phrases.indexOf(p) }));
+
+  wrap.innerHTML = `<table class="item-table">
+    <thead><tr>
+      <th class="col-ar">Phrase</th>
+      <th class="col-en" style="text-align:left;direction:ltr;">Translation</th>
+      <th class="col-pri">Priority</th>
+      <th style="width:90px;direction:ltr;text-align:center;font-size:10px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;">Grammar</th>
+      <th style="width:36px;"></th>
+    </tr></thead>
+    <tbody>${indexedFiltered.map(({p, oi}) => {
+      const cls = p.clicks===1?'p1':p.clicks===2?'p2':'';
+      const pri = ['×1','×2','×3'][p.clicks];
+      const st  = (p.translation||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      const hasNotes = p.grammarNotes && p.grammarNotes.length > 0;
+      const phraseHtml = phraseWithRedChars(p);
+      return `<tr class="item-row ${cls}" onclick="clickPhraseRow(${oi})">
+        <td class="cell-arabic phrase">${phraseHtml}</td>
+        <td class="cell-trans" onclick="event.stopPropagation()">
+          <input type="text" id="trans-p-${oi}" value="${st}" placeholder="translation..."
+            oninput="updatePhraseTrans(${oi},this.value)"
+            onkeydown="transKeydown(event,${oi},'p')">
+        </td>
+        <td class="cell-priority"><span class="priority-badge">${pri}</span></td>
+        <td style="text-align:center;" onclick="event.stopPropagation()">
+          <button class="btn-grammar${hasNotes?' has-notes':''}" onclick="openGrammarModal(${oi})">
+            ${hasNotes ? '✎ '+p.grammarNotes.length : '✎ Study'}
+          </button>
+        </td>
+        <td class="cell-remove"><button class="remove-btn" onclick="removePhrase(event,${oi})">✕</button></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+/* ══════════════════════════════════════════
+   EXPORT IMAGE
+══════════════════════════════════════════ */
+function exportImage(type) {
+  const items = type === 'words' ? words : phrases;
+  document.getElementById('ec-sub-type').textContent = type === 'words' ? 'words' : 'phrases';
+  document.getElementById('ec-listname').textContent = currentListName || '';
+  document.getElementById('ec-th-ar').textContent = type === 'words' ? 'Arabic' : 'Phrase';
+  document.getElementById('ec-tbody').innerHTML = items.map(w => {
+    const cls = w.clicks===1?'p1':w.clicks===2?'p2':'';
+    const pri = ['×1','×2','×3'][w.clicks];
+    return `<tr class="ec-row ${cls}">
+      <td class="ec-ar">${w.text}</td>
+      <td class="ec-en${w.translation?' filled':''}">${w.translation||'—'}</td>
+      <td class="ec-pri"><span class="ec-badge">${pri}</span></td>
+    </tr>`;
+  }).join('');
+  const now = new Date();
+  document.getElementById('ec-footer').textContent =
+    `Exported ${now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}`;
+  html2canvas(document.getElementById('export-card'), {
+    scale: 2, backgroundColor: '#f5f0e8', useCORS: true, logging: false
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = (currentListName || `arabic-${type}`) + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('Image saved!');
+  });
+}
+
+/* ══════════════════════════════════════════
+   JSON BACKUP / RESTORE
+══════════════════════════════════════════ */
+function exportJSON() {
+  const lists = loadAllLists();
+  if (!Object.keys(lists).length) { showToast('No saved lists to export.'); return; }
+  const json = JSON.stringify({ version: 2, exportedAt: new Date().toISOString(), lists }, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.download = `nlc-backup-${new Date().toISOString().slice(0,10)}.json`;
+  link.href = url; link.click(); URL.revokeObjectURL(url);
+  showToast(`Backup saved — ${Object.keys(lists).length} list${Object.keys(lists).length>1?'s':''}.`);
+}
+function importJSON(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data     = JSON.parse(ev.target.result);
+      const incoming = (data.lists && typeof data.lists === 'object') ? data.lists : data;
+      const valid    = Object.values(incoming).every(v => v.name && (Array.isArray(v.words) || Array.isArray(v.phrases)));
+      if (!valid) throw new Error('bad');
+      const merged = { ...loadAllLists(), ...incoming };
+      saveAllLists(merged); renderListsBar();
+      showToast(`Restored ${Object.keys(incoming).length} list${Object.keys(incoming).length>1?'s':''}.`);
+    } catch { showToast('Import failed — invalid backup file.'); }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+/* ══════════════════════════════════════════
+   PRACTICE
+══════════════════════════════════════════ */
+function buildQueue(items) {
+  let q = [];
+  items.forEach(w => {
+    const reps = [1,2,3][w.clicks];
+    for (let r = 0; r < reps; r++) q.push({ text: w.text, translation: w.translation });
+  });
+  for (let i = q.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [q[i],q[j]] = [q[j],q[i]];
+  }
+  return q;
+}
+
+function startPracticeSession() {
+  const items = practiceMode === 'words' ? words : phrases;
+  if (!items.length) {
+    document.getElementById('practice-inner').innerHTML =
+      `<div style="color:var(--muted);font-size:13px;direction:ltr;padding:2rem 0;">
+        No ${practiceMode} added yet. Go to the ${practiceMode === 'words' ? 'Words' : 'Phrases'} tab to add some.
+       </div>`;
+    return;
+  }
+  queue = buildQueue(items); idx = 0; total = queue.length; showingArabic = true;
+  renderPracticeCard(false);
+}
+
+function renderPracticeCard(restart) {
+  const area = document.getElementById('practice-inner');
+  if (idx >= queue.length) {
+    area.innerHTML = `<div class="win-screen">
+      <div class="win-star">★</div>
+      <div class="win-title">أحسنت!</div>
+      <div class="win-sub">You got all ${total} ${practiceMode === 'words' ? 'word' : 'phrase'}${total>1?'s':''} correct!</div>
+      <button class="btn btn-primary" style="margin-top:0.5rem" onclick="startPracticeSession()">Practice again</button>
+    </div>`;
+    return;
+  }
+  const w   = queue[idx];
+  const pct = Math.round((idx/total)*100);
+  const isPhrase = practiceMode === 'phrases';
+
+  const toggleHtml = w.translation ? `
+    <div class="card-toggle">
+      <button class="card-toggle-btn ${showingArabic?'active':''}" onclick="setCardSide(true)">${isPhrase?'Phrase':'Arabic'}</button>
+      <button class="card-toggle-btn ${!showingArabic?'active':''}" onclick="setCardSide(false)">Translation</button>
+    </div>` : '';
+
+  const cardContent = showingArabic
+    ? `<div class="${isPhrase?'practice-phrase':'practice-word'}">${w.text}</div>`
+    : `<div class="practice-translation">${w.translation}</div>`;
+
+  area.innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-text">${idx} / ${total} correct</div>
+    </div>
+    <div class="restart-banner" id="restart-banner">Starting over — keep going!</div>
+    ${toggleHtml}
+    <div class="word-card">${cardContent}</div>
+    <div class="answer-row">
+      <button class="btn-wrong"   onclick="answerWrong()">✕ Wrong</button>
+      <button class="btn-correct" onclick="answerCorrect()">✓ Correct</button>
+    </div>
+    <button class="back-link" onclick="switchTab('${practiceMode==='words'?'words':'phrases'}')">← back to ${practiceMode}</button>`;
+
+  if (restart) {
+    const b = document.getElementById('restart-banner');
+    b.style.display = 'block';
+    setTimeout(() => { if(b) b.style.display='none'; }, 2500);
+  }
+}
+
+function setCardSide(arabic) { showingArabic = arabic; renderPracticeCard(false); }
+function answerCorrect() { idx++; showingArabic = true; renderPracticeCard(false); }
+function answerWrong()   { queue = buildQueue(practiceMode==='words'?words:phrases); idx=0; showingArabic=true; renderPracticeCard(true); }
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ══════════════════════════════════════════
+   GRAMMAR STUDY
+══════════════════════════════════════════ */
+let gsPhrasIdx = -1;        // which phrase is open
+let gsSelection = [];       // array of char indices currently selected
+let isDragging = false;
+let dragStart = -1;
+
+function openGrammarModal(i) {
+  gsPhrasIdx = i;
+  gsSelection = [];
+  const p = phrases[i];
+  if (!p.grammarNotes) p.grammarNotes = [];
+
+  document.getElementById('gs-title').textContent = 'Grammar Study';
+  renderGsPhrase();
+  renderGsNotes();
+  updateGsSelLabel();
+  document.getElementById('gs-note-input').value = '';
+  document.getElementById('gs-note-input').disabled = true;
+  document.getElementById('gs-add-note-btn').disabled = true;
+  document.getElementById('gs-backdrop').classList.add('open');
+}
+
+function closeGrammarModal() {
+  document.getElementById('gs-backdrop').classList.remove('open');
+  gsPhrasIdx = -1; gsSelection = [];
+}
+
+document.getElementById('gs-backdrop').addEventListener('click', e => {
+  if (e.target === document.getElementById('gs-backdrop')) closeGrammarModal();
+});
+
+/* Build clickable characters */
+function renderGsPhrase() {
+  const p = phrases[gsPhrasIdx];
+  const notes = p.grammarNotes || [];
+
+  // Build sets of annotated char indices — separate for study vs regular
+  const annotatedRed    = new Set();
+  const annotatedYellow = new Set();
+  notes.forEach(n => {
+    n.indices.forEach(idx => {
+      if (n.needsStudy) annotatedYellow.add(idx);
+      else annotatedRed.add(idx);
+    });
+  });
+
+  const container = document.getElementById('gs-phrase-text');
+  container.innerHTML = '';
+
+  [...p.text].forEach((ch, ci) => {
+    const span = document.createElement('span');
+    span.className = 'gs-char' + (ch === ' ' ? ' space' : '');
+    if (annotatedRed.has(ci))    span.classList.add('annotated');
+    if (annotatedYellow.has(ci)) span.classList.add('annotated-study');
+    if (gsSelection.includes(ci)) span.classList.add('in-drag');
+    span.textContent = ch === ' ' ? '\u00A0' : ch;
+    span.dataset.ci = ci;
+
+    if (ch !== ' ') {
+      // Mouse click & drag for selection
+      span.addEventListener('mousedown', e => {
+        e.preventDefault();
+        isDragging = true; dragStart = ci;
+        gsSelection = [ci];
+        renderGsPhrase(); updateGsSelLabel();
+      });
+      span.addEventListener('mouseover', () => {
+        if (isDragging) {
+          const lo = Math.min(dragStart, ci), hi = Math.max(dragStart, ci);
+          gsSelection = [];
+          for (let k = lo; k <= hi; k++) {
+            if (p.text[k] !== ' ') gsSelection.push(k);
+          }
+          renderGsPhrase(); updateGsSelLabel();
+        }
+      });
+    }
+
+    // Hover note highlighting
+    span.addEventListener('mouseenter', () => {
+      const noteIdx = getNotesForChar(ci);
+      highlightNotes(noteIdx, true);
+      highlightAnnotatedChars(noteIdx, true);
+    });
+    span.addEventListener('mouseleave', () => {
+      const noteIdx = getNotesForChar(ci);
+      highlightNotes(noteIdx, false);
+      highlightAnnotatedChars(noteIdx, false);
+    });
+
+    container.appendChild(span);
+  });
+}
+
+document.addEventListener('mouseup', () => { isDragging = false; });
+
+function getNotesForChar(ci) {
+  const notes = phrases[gsPhrasIdx]?.grammarNotes || [];
+  return notes.map((n,i) => n.indices.includes(ci) ? i : -1).filter(x => x >= 0);
+}
+
+function highlightNotes(noteIndices, on) {
+  const items = document.querySelectorAll('.gs-note-item');
+  items.forEach((el, i) => {
+    el.classList.toggle('note-glowing', on && noteIndices.includes(i));
+  });
+}
+
+function highlightAnnotatedChars(noteIndices, on) {
+  const notes = phrases[gsPhrasIdx]?.grammarNotes || [];
+  const relatedChars = new Set();
+  noteIndices.forEach(ni => notes[ni]?.indices.forEach(ci => relatedChars.add(ci)));
+  document.querySelectorAll('.gs-char').forEach(el => {
+    const ci = parseInt(el.dataset.ci);
+    if (relatedChars.has(ci)) {
+      const isStudy = noteIndices.some(ni => notes[ni]?.needsStudy && notes[ni].indices.includes(ci));
+      el.classList.toggle('note-hovered', on);
+    }
+  });
+}
+
+function updateGsSelLabel() {
+  const label = document.getElementById('gs-sel-label');
+  const inp   = document.getElementById('gs-note-input');
+  const btn   = document.getElementById('gs-add-note-btn');
+  const studyBtn = document.getElementById('gs-add-study-btn');
+  if (!gsSelection.length) {
+    label.innerHTML = 'Select letters above to annotate them';
+    inp.disabled = true; btn.disabled = true; studyBtn.disabled = true;
+  } else {
+    const p = phrases[gsPhrasIdx];
+    const selText = gsSelection.map(i => p.text[i]).join('');
+    label.innerHTML = `Selected: <span class="sel-text">${selText}</span>`;
+    inp.disabled = false; btn.disabled = false; studyBtn.disabled = false;
+    inp.focus();
+  }
+}
+
+function addGrammarNote(needsStudy = false) {
+  const noteText = document.getElementById('gs-note-input').value.trim();
+  if (!gsSelection.length) return;
+  // If needsStudy=false (Add note), require some text
+  if (!needsStudy && !noteText) return;
+  const p = phrases[gsPhrasIdx];
+  if (!p.grammarNotes) p.grammarNotes = [];
+  p.grammarNotes.push({ indices: [...gsSelection], noteText: noteText || '', needsStudy: !!needsStudy });
+  gsSelection = [];
+  document.getElementById('gs-note-input').value = '';
+  document.getElementById('gs-note-input').disabled = true;
+  document.getElementById('gs-add-note-btn').disabled = true;
+  document.getElementById('gs-add-study-btn').disabled = true;
+  renderGsPhrase();
+  renderGsNotes();
+  updateGsSelLabel();
+  autoSave();
+  renderPhrases(); // update red/yellow chars in the main list
+}
+
+document.getElementById('gs-note-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addGrammarNote(); }
+});
+
+function deleteGrammarNote(ni) {
+  phrases[gsPhrasIdx].grammarNotes.splice(ni, 1);
+  gsSelection = [];
+  renderGsPhrase(); renderGsNotes(); updateGsSelLabel(); autoSave();
+  renderPhrases(); // refresh table button label
+}
+
+function renderGsNotes() {
+  const area  = document.getElementById('gs-notes-area');
+  const notes = phrases[gsPhrasIdx]?.grammarNotes || [];
+  if (!notes.length) {
+    area.innerHTML = '<div class="gs-notes-empty">No grammar notes yet — select letters above and write a note.</div>';
+    return;
+  }
+  const p = phrases[gsPhrasIdx];
+  area.innerHTML = notes.map((n, ni) => {
+    const chars = n.indices.map(i => p.text[i]).join('');
+    const studyCls = n.needsStudy ? ' needs-study' : '';
+    const badge = n.needsStudy ? `<span class="gs-study-badge">? needs study</span>` : '';
+    const noteDisplay = n.noteText || '<span style="color:var(--muted);font-style:italic;">No note</span>';
+    return `<div class="gs-note-item${studyCls}"
+      onmouseenter="highlightAnnotatedChars([${ni}], true); document.querySelectorAll('.gs-note-item')[${ni}].classList.add('note-glowing')"
+      onmouseleave="highlightAnnotatedChars([${ni}], false); document.querySelectorAll('.gs-note-item')[${ni}].classList.remove('note-glowing')">
+      <div class="gs-note-chars">${chars}</div>
+      <div class="gs-note-text">${noteDisplay}</div>
+      ${badge}
+      <button class="gs-note-del" onclick="deleteGrammarNote(${ni})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+renderListsBar();
+renderCatTabs();
+renderSortBar();
+timerRender();
+
+/* ── Service Worker registration ── */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('NLC SW registered, scope:', reg.scope))
+      .catch(err => console.warn('NLC SW failed:', err));
+  });
+}
+</script>
+</body>
+</html>
